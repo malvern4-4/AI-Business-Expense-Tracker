@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Business Expense Tracker</title>
+    <meta name="description" content="Intelligent expense tracking powered by Gemini AI">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="glow-bg"></div>
+    <div class="glow-bg glow-bg-alt"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo-area">
+                <div class="logo-icon"></div>
+                <h1>Aura <span>Expense</span></h1>
+            </div>
+            <div class="header-controls">
+                <input type="month" id="monthPicker" class="month-picker">
+                <button id="settingsBtn" class="glass-btn">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Settings
+                </button>
+            </div>
+        </header>
+
+        <nav class="main-nav">
+            <button class="nav-tab active" data-view="dashboard">Dashboard</button>
+            <button class="nav-tab" data-view="expenses">All Expenses</button>
+            <button class="nav-tab" data-view="insights">AI Insights</button>
+        </nav>
+
+        <main>
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="page-view active">
+                <div class="dashboard-top">
+                <div class="summary-card glass-panel">
+                    <h2>Total Expenses</h2>
+                    <div class="total-amount" id="totalAmount">$0.00</div>
+                    <div class="budget-container">
+                        <div class="budget-header">
+                            <span>Budget</span>
+                            <span id="budgetDisplay">$0.00</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="budgetProgress"></div>
+                        </div>
+                    </div>
+                    <div class="spending-trend">
+                        <span class="trend up">AI Categorized</span>
+                    </div>
+                </div>
+
+                <div class="input-card glass-panel">
+                    <h2>Log an Expense</h2>
+                    <p class="subtitle">Tell Aura about your expense in natural language.</p>
+                    <form id="expenseForm">
+                        <div class="input-wrapper">
+                            <input type="text" id="expenseInput"
+                                placeholder="e.g. Spent $45 at Starbucks today for client meeting..."
+                                autocomplete="off">
+                            <button type="submit" id="submitBtn" class="primary-btn">
+                                <span class="btn-text">Parse</span>
+                                <div class="loader" id="submitLoader" style="display: none;"></div>
+                            </button>
+                        </div>
+                    </form>
+                    <div id="statusMessage" class="status-message"></div>
+                </div>
+                </div>
+            </section>
+
+            <!-- Expenses View -->
+            <section id="view-expenses" class="page-view">
+                <div class="expenses-section">
+                <div class="section-header">
+                    <h2>Recent Transactions</h2>
+                    <div class="filter-pills" id="categoryFilters">
+                        <!-- Filters generated dynamically -->
+                    </div>
+                </div>
+
+                <div class="expense-list" id="expenseList">
+                    <div class="empty-state">
+                        <div class="empty-icon">💸</div>
+                        <p>No expenses logged yet.</p>
+                        <span>Your AI parsed expenses will appear here.</span>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <!-- AI Insights View -->
+            <section id="view-insights" class="page-view">
+                <div class="insights-section">
+                    <div class="insights-header glass-panel">
+                        <h2>Your Personal AI Financial Advisor</h2>
+                        <p class="subtitle">Get tailored advice based on your spending habits and budget.</p>
+                        <button id="generateInsightsBtn" class="primary-btn">
+                            <span class="btn-text">Generate Insights</span>
+                            <div class="loader" id="insightsLoader" style="display: none;"></div>
+                        </button>
+                    </div>
+                    <div class="insights-content glass-panel" id="insightsContent" style="display: none;">
+                        <!-- AI Insights will be populated here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-btn" id="closeSettingsBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="globalCurrency">Currency</label>
+                    <select id="globalCurrency" class="currency-select">
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="CAD">CAD ($)</option>
+                        <option value="AUD">AUD ($)</option>
+                        <option value="JPY">JPY (¥)</option>
+                        <option value="INR">INR (₹)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="monthlyBudget">Monthly Budget Limit</label>
+                    <input type="number" id="monthlyBudget" placeholder="e.g. 2000" min="0" step="10">
+                    <small>Used by AI to provide spending advice.</small>
+                </div>
+                <div class="form-group">
+                    <label for="apiKey">Gemini API Key</label>
+                    <input type="password" id="apiKey" placeholder="AIzaSy...">
+                    <small>Stored securely in your local browser only.</small>
+                </div>
+                <button id="saveSettingsBtn" class="primary-btn full-width">Save Key</button>
+                
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--panel-border);">
+                    <button id="resetDataBtn" class="danger-btn full-width">Reset All Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js" defer></script>
+</body>
+
+</html>
